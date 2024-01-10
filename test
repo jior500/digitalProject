@@ -1,0 +1,35 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+-- This entity describes 4-bit counter limited to 13 with synchronous
+--  reset and enable.
+entity cnt_to_13_4bit is
+    Port ( clk : in STD_LOGIC;
+           rst : in STD_LOGIC;
+           en  : in STD_LOGIC;
+           cnt_out : out UNSIGNED (3 downto 0));
+end cnt_to_13_4bit;
+
+architecture Behavioral of cnt_to_13_4bit is
+    signal cnt_int : UNSIGNED(3 downto 0);
+begin
+-- counter to 13 with synchronous rsset and enable
+cnt_to_13_sync_r_en : process (clk) -- No reset in sensitivity list
+begin
+    if (rising_edge(clk)) then
+        if (rst = '1') then -- synchronous reset
+            cnt_int <= (others => '0');
+        else
+            if (en = '1') then
+                if (cnt_int = 13) then 
+                    cnt_int <= (others => '0');
+                else
+                    cnt_int <= (cnt_int + 1);
+                end if;
+            end if;
+        end if;
+    end if;
+end process cnt_to_13_sync_r_en;
+    cnt_out <= cnt_int;
+end Behavioral;
